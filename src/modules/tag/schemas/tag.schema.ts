@@ -7,6 +7,9 @@ export type TagDocument = Tag & Document;
 export class Tag {
   @Prop()
   tag: string;
+
+  @Prop({ type: Boolean, default: false, select: false })
+  deleted: boolean;
 }
 
 export const TagSchema = SchemaFactory.createForClass(Tag);

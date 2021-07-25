@@ -1,9 +1,5 @@
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Tag } from '../../tag/schemas/tag.schema';
-import { Category } from '../../category/schemas/category.schema';
-import { Comment } from '../../comment/schemas/comment.schema';
-import { User } from '../../user/schemas/user.schema';
 
 export type ArticleDocument = Article & Document;
 
@@ -13,19 +9,19 @@ export class Article {
   title: string;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
-  user: User;
+  user: string;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Category' })
-  category: Category;
+  category: string;
 
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Tag' }] })
-  tags: Tag[];
+  tags: string[];
 
-  @Prop({ type: String })
+  @Prop()
   content: string;
 
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Comment' }] })
-  comments: Comment[];
+  comments: string[];
 }
 
 export const ArticleSchema = SchemaFactory.createForClass(Article);
