@@ -5,7 +5,7 @@ import { Document } from 'mongoose';
 export type CommentDocument = Comment & Document;
 
 @Schema()
-class Comment {
+export class Comment {
   @Prop()
   name: string;
 
