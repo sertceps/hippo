@@ -29,6 +29,9 @@ export class User {
 
   @Prop({ required: false })
   description: string;
+
+  @Prop({ type: Boolean, default: false })
+  deleted: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

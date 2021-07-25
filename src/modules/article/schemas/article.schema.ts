@@ -22,6 +22,9 @@ export class Article {
 
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Comment' }] })
   comments: string[];
+
+  @Prop({ type: Boolean, default: false })
+  deleted: boolean;
 }
 
 export const ArticleSchema = SchemaFactory.createForClass(Article);

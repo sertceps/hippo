@@ -7,6 +7,9 @@ export type CategoryDocument = Category & Document;
 export class Category {
   @Prop()
   category: string;
+
+  @Prop({ type: Boolean, default: false })
+  deleted: boolean;
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);
