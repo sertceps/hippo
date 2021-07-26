@@ -1,17 +1,20 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
 
 export type CommentDocument = Comment & Document;
 
 @Schema()
 export class Comment {
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Article' })
+  article_id: string;
+
   @Prop()
   name: string;
 
   @Prop()
   email: string;
 
-  @Prop()
+  @Prop({ required: false })
   website: string;
 
   @Prop()

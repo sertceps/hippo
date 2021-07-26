@@ -20,9 +20,6 @@ export class Article {
   @Prop()
   content: string;
 
-  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Comment' }] })
-  comments: string[];
-
   @Prop({ type: Boolean, default: false })
   deleted: boolean;
 }
