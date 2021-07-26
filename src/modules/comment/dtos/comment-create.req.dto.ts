@@ -1,6 +1,10 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsEmail, IsMongoId, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CommentCreateReqDto {
+  @IsMongoId({ message: 'article_id 格式应为 mongodb id' })
+  @IsNotEmpty({ message: 'article_id 不能为空' })
+  article_id: string;
+
   @MaxLength(60, { message: 'name 最长为 60 字符' })
   @IsString({ message: 'name 应为字符串格式' })
   @IsNotEmpty({ message: 'name 不能为空' })

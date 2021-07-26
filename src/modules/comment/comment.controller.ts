@@ -11,7 +11,7 @@ export class CommentController {
 
   @Post()
   async create(@Body() body: CommentCreateReqDto): Promise<IdResDto> {
-    const comment = await this.commentService.create(body.name, body.email, body.content, body.website);
+    const comment = await this.commentService.create(body.article_id, body.name, body.email, body.content, body.website);
 
     return { id: comment._id };
   }

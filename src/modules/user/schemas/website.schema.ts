@@ -20,8 +20,8 @@ export class Website {
   @Prop({ required: false })
   gitee: string;
 
-  @Prop({ name: 'personal_website', type: [String], required: false })
-  personalWebsites: string[];
+  @Prop({ type: [String], required: false })
+  personal_websites: string[];
 }
 
 export const WebsiteSchema = SchemaFactory.createForClass(Website);

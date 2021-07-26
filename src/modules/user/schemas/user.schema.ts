@@ -6,8 +6,8 @@ export type UserDocument = User & Document;
 
 @Schema()
 export class User {
-  @Prop({ name: 'user_name' })
-  userName: string;
+  @Prop()
+  user_name: string;
 
   @Prop()
   email: string;
@@ -24,13 +24,13 @@ export class User {
   @Prop({ required: false })
   avatar: string;
 
-  @Prop({ type: [WebsiteSchema], required: false })
-  websites: Website[];
+  @Prop({ type: WebsiteSchema, required: false })
+  websites: Website;
 
   @Prop({ required: false })
   description: string;
 
-  @Prop({ type: Boolean, default: false })
+  @Prop({ type: Boolean, default: false, select: false })
   deleted: boolean;
 }
 
