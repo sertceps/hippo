@@ -9,7 +9,7 @@ import { TagModule } from './modules/tag/tag.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://localhost/test'), ArticleModule, CategoryModule, CommentModule, TagModule, UserModule],
+  imports: [MongooseModule.forRoot('mongodb://localhost/test', { useCreateIndex: true }), ArticleModule, CategoryModule, CommentModule, TagModule, UserModule],
   controllers: [AppController],
   providers: [AppService]
 })
