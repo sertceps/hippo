@@ -1,4 +1,5 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CategoryService } from '../category/category.service';
 import { IdReqDto } from '../common/dtos/id.req.dto';
 import { IdResDto } from '../common/dtos/id.res.dto';
@@ -9,6 +10,7 @@ import { CategoryCreateUpdateReqDto } from './dtos/category-create-update.req.dt
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   async create(@Body() body: CategoryCreateUpdateReqDto): Promise<IdResDto> {
     const count = await this.categoryService.checkRepeat(body.category);
@@ -19,6 +21,7 @@ export class CategoryController {
     return { id: category.id };
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   async deleteOneById(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.categoryService.deleteOne(id);
@@ -26,6 +29,7 @@ export class CategoryController {
     return { affected: res.nModified };
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   async updateOneById(@Param() { id }: IdReqDto, @Body() body: CategoryCreateUpdateReqDto): Promise<NumberResDto> {
     const count = await this.categoryService.checkRepeat(body.category, id);

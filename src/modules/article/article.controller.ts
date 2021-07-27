@@ -1,4 +1,5 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CategoryService } from '../category/category.service';
 import { Category } from '../category/schemas/category.schema';
 import { IdReqDto } from '../common/dtos/id.req.dto';
@@ -16,6 +17,8 @@ import { ArticleGetReqDto } from './dtos/article-get.req.dto';
 export class ArticleController {
   constructor(private readonly articleService: ArticleService, private readonly tagService: TagService, private readonly categoryService: CategoryService, private readonly userService: UserService) {}
 
+  // 为什么这里不需要在 module 导入 jwt 策略就可以用
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   async create(@Body() body: ArticleCreateUpdateReqDto): Promise<IdResDto> {
     let category: Category;
@@ -24,6 +27,7 @@ export class ArticleController {
       if (!category) throw new BadRequestException('类别不存在或已删除');
     }
 
+    // https://stackoverflow.com/questions/57833669/how-to-get-jwt-token-from-headers-in-controller
     const user = await this.userService.findOneById(body.user);
     if (!user) throw new BadRequestException('用户不存在或已删除');
 
@@ -38,6 +42,7 @@ export class ArticleController {
     return { id: article._id };
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   async deleteOneById(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.articleService.deleteOneById(id);
@@ -45,6 +50,7 @@ export class ArticleController {
     return { affected: res.nModified };
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   async updateOneById(@Param() { id }: IdReqDto, @Body() body: ArticleCreateUpdateReqDto): Promise<NumberResDto> {
     const article = await this.articleService.findOneById(id);

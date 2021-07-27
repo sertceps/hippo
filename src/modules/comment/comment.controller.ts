@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { IdReqDto } from '../common/dtos/id.req.dto';
 import { IdResDto } from '../common/dtos/id.res.dto';
 import { NumberResDto } from '../common/dtos/number.res.dto';
@@ -16,6 +17,7 @@ export class CommentController {
     return { id: comment._id };
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   async deleteOneById(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.commentService.deleteOneById(id);
@@ -23,6 +25,7 @@ export class CommentController {
     return { affected: res.deletedCount };
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete('/articles/:id')
   async deleteAllById(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.commentService.deleteAllById(id);

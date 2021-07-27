@@ -32,6 +32,7 @@ export class UserController {
     return { id: user._id };
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   async deleteOneById(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.userService.deleteOneById(id);
@@ -39,6 +40,7 @@ export class UserController {
     return { affected: res.nModified };
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   async updateOneById(@Param() { id }: IdReqDto, @Body() body: UserCreateUpdateReqDto): Promise<NumberResDto> {
     const user = await this.userService.findOneById(id);
@@ -52,6 +54,7 @@ export class UserController {
     return { affected: res.nModified };
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   async findOneById(@Param() { id }: IdReqDto): Promise<UserGetResDto> {
     const user = await this.userService.findOneById(id);
@@ -60,6 +63,7 @@ export class UserController {
     return await this.userService.findOneById(id);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   async findAll(): Promise<UserGetResDto[]> {
     return await this.userService.findAll();
