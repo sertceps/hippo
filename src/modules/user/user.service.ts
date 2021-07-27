@@ -24,6 +24,10 @@ export class UserService {
     return this.userModel.findOne({ _id: id, deleted: false });
   }
 
+  async findOneByEmail(email: string): Promise<UserDocument> {
+    return this.userModel.findOne({ email, deleted: false });
+  }
+
   async findAll(): Promise<UserDocument[]> {
     return this.userModel.find({ deleted: false });
   }
