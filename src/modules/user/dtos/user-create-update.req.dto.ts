@@ -35,6 +35,10 @@ export class UserCreateUpdateReqDto {
   @IsNotEmpty({ message: 'email 不能为空' })
   email: string;
 
+  @IsString({ message: 'password 应为字符串格式' })
+  @IsNotEmpty({ message: 'password 不能为空' })
+  password: string;
+
   @IsString({ message: 'birth 格式应为 Date' })
   @IsOptional()
   birth: Date;

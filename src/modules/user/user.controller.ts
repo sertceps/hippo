@@ -1,15 +1,28 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from '../auth/auth.service';
 import { IdReqDto } from '../common/dtos/id.req.dto';
 import { IdResDto } from '../common/dtos/id.res.dto';
 import { NumberResDto } from '../common/dtos/number.res.dto';
+import { TokenResDto } from '../common/dtos/token.res.dto';
 import { UserCreateUpdateReqDto } from './dtos/user-create-update.req.dto';
 import { UserGetResDto } from './dtos/user-get.res.dto';
+import { UserLoginReqDto } from './dtos/user-login.req.dto';
 import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService, private readonly authService: AuthService) {}
 
+  @Post('/login')
+  async login(@Body() body: UserLoginReqDto): Promise<TokenResDto> {
+    const user = await this.authService.validateUser(body.email, body.password);
+    if (!user) throw new BadRequestException('邮箱或密码不正确');
+
+    return { access_token: await this.authService.certificate(user) };
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   async create(@Body() body: UserCreateUpdateReqDto): Promise<IdResDto> {
     const count = await this.userService.checkRepeat(body.email);

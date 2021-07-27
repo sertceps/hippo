@@ -24,7 +24,8 @@ export class UserService {
     return this.userModel.findOne({ _id: id, deleted: false });
   }
 
-  async findOneByEmail(email: string): Promise<UserDocument> {
+  async findOneByEmail(email: string, login?: boolean): Promise<UserDocument> {
+    if (login) return this.userModel.findOne({ email, deleted: false }).select('password email');
     return this.userModel.findOne({ email, deleted: false });
   }
 

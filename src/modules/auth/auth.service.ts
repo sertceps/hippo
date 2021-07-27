@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { TokenResDto } from '../common/dtos/token.res.dto';
 import { UserDocument } from '../user/schemas/user.schema';
 import { UserService } from '../user/user.service';
 
@@ -8,16 +7,21 @@ import { UserService } from '../user/user.service';
 export class AuthService {
   constructor(private readonly userService: UserService, private readonly jwtService: JwtService) {}
 
-  async validateUser(email: string, pass: string): Promise<boolean> {
-    const user = await this.userService.findOneByEmail(email);
-    if (user && user.password === pass) return true;
+  async validateUser(email: string, password: string): Promise<UserDocument | null> {
+    const user = await this.userService.findOneByEmail(email, true);
+    if (user && user.password === password) return user;
 
-    return false;
+    return null;
   }
 
-  async login(user: UserDocument): Promise<TokenResDto> {
-    const payload = { email: user.email, id: user._id };
+  async certificate(user: UserDocument): Promise<string> {
+    const payload = {
+      email: user.email,
+      id: user._id
+    };
 
-    return { access_token: this.jwtService.sign(payload) };
+    const token = this.jwtService.sign(payload);
+
+    return token;
   }
 }
