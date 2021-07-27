@@ -80,9 +80,6 @@ export class ArticleController {
 
   @Get()
   async findAndPaging(@Query() query: PagingReqDto): Promise<ArticleGetReqDto[]> {
-    const page = parseInt(query.page.toString());
-    const size = parseInt(query.size.toString());
-
-    return await this.articleService.findAndPaging((page - 1) * size, size);
+    return await this.articleService.findAndPaging((query.page - 1) * query.size, query.size);
   }
 }

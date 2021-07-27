@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from './modules/common/pipes/validation.pipe';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
