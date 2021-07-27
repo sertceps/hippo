@@ -20,10 +20,10 @@ export class ArticleService {
   }
 
   async findOneById(id: string): Promise<ArticleDocument> {
-    return this.articleModel.findById(id);
+    return this.articleModel.findOne({ _id: id, deleted: false });
   }
 
   async findAndPaging(page: number, size: number): Promise<ArticleDocument[]> {
-    return this.articleModel.find().limit(size).skip(page);
+    return this.articleModel.find({ deleted: false }).limit(size).skip(page);
   }
 }

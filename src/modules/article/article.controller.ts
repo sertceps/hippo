@@ -47,6 +47,9 @@ export class ArticleController {
 
   @Put(':id')
   async updateOneById(@Param() { id }: IdReqDto, @Body() body: ArticleCreateUpdateReqDto): Promise<NumberResDto> {
+    const article = await this.articleService.findOneById(id);
+    if (!article) throw new BadRequestException('文章不存在或已删除');
+
     let category: Category;
     if (body.category) {
       category = await this.categoryService.findOneById(body.category);
@@ -61,21 +64,25 @@ export class ArticleController {
       tags = await Promise.all(body.tags.map(async item => this.tagService.findOneById(item)));
     }
 
-    const article = { ...body, tags, category, user, deleted: false };
-    const res = await this.articleService.updateOneById(id, article);
+    const articleDoc = { ...body, tags, category, user, deleted: false };
+    const res = await this.articleService.updateOneById(id, articleDoc);
 
     return { affected: res.nModified };
   }
 
   @Get(':id')
   async findOneById(@Param() { id }: IdReqDto): Promise<ArticleGetReqDto> {
+    const article = await this.articleService.findOneById(id);
+    if (!article) throw new BadRequestException('文章不存在或已删除');
+
     return await this.articleService.findOneById(id);
   }
 
   @Get()
   async findAndPaging(@Query() query: PagingReqDto): Promise<ArticleGetReqDto[]> {
-    console.log(typeof query.page);
+    const page = parseInt(query.page.toString());
+    const size = parseInt(query.size.toString());
 
-    return await this.articleService.findAndPaging(query.page - 1, query.size);
+    return await this.articleService.findAndPaging((page - 1) * size, size);
   }
 }
