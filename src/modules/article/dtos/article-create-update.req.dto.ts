@@ -1,10 +1,4 @@
-import { IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-
-class Tag {
-  @IsMongoId({ message: 'tag 格式应为 mongodb id' })
-  @IsNotEmpty({ message: 'tag 项不能为空' })
-  tag: string;
-}
+import { ArrayNotEmpty, IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 export class ArticleCreateUpdateReqDto {
   @IsString({ message: 'title 格式应为字符串' })
@@ -20,8 +14,9 @@ export class ArticleCreateUpdateReqDto {
   @IsOptional()
   category: string;
 
+  @IsMongoId({ each: true, message: 'tags 中项目格式应为 mongodb id' })
   @IsArray({ message: 'tags 应为数组' })
-  @IsNotEmpty({ message: 'tags 不能为空' })
+  @ArrayNotEmpty({ message: 'tags 不能为空' })
   @IsOptional()
   tags: string[];
 

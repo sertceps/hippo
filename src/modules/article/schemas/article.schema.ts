@@ -23,7 +23,7 @@ export class Article {
   @Prop()
   content: string;
 
-  @Prop({ type: Boolean, default: false })
+  @Prop({ type: Boolean, default: false, select: false })
   deleted: boolean;
 }
 

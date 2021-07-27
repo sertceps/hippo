@@ -25,6 +25,10 @@ export class TagService {
     return this.tagModel.findById(id);
   }
 
+  async findOneByTag(tag: string): Promise<TagDocument> {
+    return this.tagModel.findOne({ tag });
+  }
+
   async findAll(): Promise<TagDocument[]> {
     return await this.tagModel.find({ deleted: false });
   }
