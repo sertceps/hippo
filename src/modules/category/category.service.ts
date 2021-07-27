@@ -19,6 +19,10 @@ export class CategoryService {
     return this.categoryModel.updateOne({ _id: id }, { category });
   }
 
+  async findOneById(id: string): Promise<CategoryDocument> {
+    return this.categoryModel.findById(id);
+  }
+
   async findAll(): Promise<CategoryDocument[]> {
     return this.categoryModel.find({ deleted: false });
   }

@@ -7,11 +7,7 @@ import { Article, ArticleDocument } from './schemas/article.schema';
 export class ArticleService {
   constructor(@InjectModel(Article.name) private readonly articleModel: Model<ArticleDocument>) {}
 
-  async create(title: string, userId: string, content: string, category?: string, tags?: string[]): Promise<ArticleDocument> {
-    const article = new this.articleModel({ title, user: userId, content, category });
-    if (category) article.category = category;
-    if (tags) article.tags = tags;
-
-    return article.save();
+  async create(article: Article): Promise<ArticleDocument> {
+    return this.articleModel.create(article);
   }
 }

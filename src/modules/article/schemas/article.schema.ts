@@ -1,5 +1,8 @@
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Tag } from '../../tag/schemas/tag.schema';
+import { Category } from '../../category/schemas/category.schema';
+import { User } from '../../user/schemas/user.schema';
 
 export type ArticleDocument = Article & Document;
 
@@ -9,13 +12,13 @@ export class Article {
   title: string;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
-  user: string;
+  user: User;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Category' })
-  category: string;
+  category: Category;
 
   @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Tag' }] })
-  tags: string[];
+  tags: Tag[];
 
   @Prop()
   content: string;
