@@ -13,7 +13,7 @@ import { JwtStrategy } from './jwt.strategy';
     // JwtModule.register({ secret: jwtConstants.secret, signOptions: { expiresIn: '1h' } })
     // 不加上面两个，没有影响？
   ],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService]
+  providers: [AuthService, JwtStrategy]
+  // exports: [AuthService]
 })
 export class AuthModule {}
