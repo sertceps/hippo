@@ -1,5 +1,6 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { mongo } from 'mongoose';
 import { CategoryService } from '../category/category.service';
 import { Category } from '../category/schemas/category.schema';
 import { IdReqDto } from '../common/dtos/id.req.dto';
@@ -11,11 +12,17 @@ import { TagService } from '../tag/tag.service';
 import { UserService } from '../user/user.service';
 import { ArticleService } from './article.service';
 import { ArticleCreateUpdateReqDto } from './dtos/article-create-update.req.dto';
-import { ArticleGetReqDto } from './dtos/article-get.req.dto';
+import { ArticleGetResDto } from './dtos/article-get.res.dto';
+import { ArticleTimeReqDto } from './dtos/article-time.req.dto';
 
 @Controller('articles')
 export class ArticleController {
-  constructor(private readonly articleService: ArticleService, private readonly tagService: TagService, private readonly categoryService: CategoryService, private readonly userService: UserService) {}
+  constructor(
+    private readonly articleService: ArticleService,
+    private readonly tagService: TagService,
+    private readonly categoryService: CategoryService,
+    private readonly userService: UserService
+  ) {}
 
   // 为什么这里不需要在 module 导入 jwt 策略就可以用
   @UseGuards(AuthGuard('jwt'))
@@ -50,6 +57,15 @@ export class ArticleController {
     return { affected: res.nModified };
   }
 
+  @Get('/just-test')
+  async findByTime(@Body() body: ArticleTimeReqDto): Promise<ArticleGetResDto[]> {
+    const from = mongo.ObjectId.createFromTime(new Date().getTime()).toHexString();
+
+    const to = mongo.ObjectId.createFromTime(new Date().getTime()).toHexString();
+
+    return await this.articleService.findByTime('60ff8091bc067c03a8388000', to);
+  }
+
   @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   async updateOneById(@Param() { id }: IdReqDto, @Body() body: ArticleCreateUpdateReqDto): Promise<NumberResDto> {
@@ -77,7 +93,7 @@ export class ArticleController {
   }
 
   @Get(':id')
-  async findOneById(@Param() { id }: IdReqDto): Promise<ArticleGetReqDto> {
+  async findOneById(@Param() { id }: IdReqDto): Promise<ArticleGetResDto> {
     const article = await this.articleService.findOneById(id);
     if (!article) throw new BadRequestException('文章不存在或已删除');
 
@@ -85,7 +101,7 @@ export class ArticleController {
   }
 
   @Get()
-  async findAndPaging(@Query() query: PagingReqDto): Promise<ArticleGetReqDto[]> {
+  async findAndPaging(@Query() query: PagingReqDto): Promise<ArticleGetResDto[]> {
     return await this.articleService.findAndPaging((query.page - 1) * query.size, query.size);
   }
 }
