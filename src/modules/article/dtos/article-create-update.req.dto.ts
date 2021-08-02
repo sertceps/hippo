@@ -1,4 +1,4 @@
-import { ArrayNotEmpty, IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class ArticleCreateUpdateReqDto {
   @IsString({ message: 'title 格式应为字符串' })

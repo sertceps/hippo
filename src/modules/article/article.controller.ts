@@ -1,6 +1,5 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { mongo } from 'mongoose';
 import { CategoryService } from '../category/category.service';
 import { Category } from '../category/schemas/category.schema';
 import { IdReqDto } from '../common/dtos/id.req.dto';
@@ -13,7 +12,6 @@ import { UserService } from '../user/user.service';
 import { ArticleService } from './article.service';
 import { ArticleCreateUpdateReqDto } from './dtos/article-create-update.req.dto';
 import { ArticleGetResDto } from './dtos/article-get.res.dto';
-import { ArticleTimeReqDto } from './dtos/article-time.req.dto';
 
 @Controller('articles')
 export class ArticleController {
@@ -55,15 +53,6 @@ export class ArticleController {
     const res = await this.articleService.deleteOneById(id);
 
     return { affected: res.nModified };
-  }
-
-  @Get('/just-test')
-  async findByTime(@Body() body: ArticleTimeReqDto): Promise<ArticleGetResDto[]> {
-    const from = mongo.ObjectId.createFromTime(new Date().getTime()).toHexString();
-
-    const to = mongo.ObjectId.createFromTime(new Date().getTime()).toHexString();
-
-    return await this.articleService.findByTime('60ff8091bc067c03a8388000', to);
   }
 
   @UseGuards(AuthGuard('jwt'))

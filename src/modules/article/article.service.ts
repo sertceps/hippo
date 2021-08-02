@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId, UpdateWriteOpResult } from 'mongoose';
+import { Model, UpdateWriteOpResult } from 'mongoose';
 import { Article, ArticleDocument } from './schemas/article.schema';
 
 @Injectable()
@@ -25,15 +25,5 @@ export class ArticleService {
 
   async findAndPaging(page: number, size: number): Promise<ArticleDocument[]> {
     return this.articleModel.find({ deleted: false }).limit(size).skip(page);
-  }
-
-  /** 使用 ObjectId 按时间范围查询 */
-  async findByTime(from: string, to: string) {
-    return this.articleModel.find({
-      _id: {
-        $gt: from,
-        $lt: to
-      }
-    });
   }
 }
