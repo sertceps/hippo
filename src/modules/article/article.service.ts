@@ -23,7 +23,11 @@ export class ArticleService {
     return this.articleModel.findOne({ _id: id, deleted: false });
   }
 
-  async findAndPaging(page: number, size: number): Promise<ArticleDocument[]> {
-    return this.articleModel.find({ deleted: false }).limit(size).skip(page);
+  async findAndPaging(page: number, size: number, orderBy?: string): Promise<ArticleDocument[]> {
+    return this.articleModel
+      .find({ deleted: false })
+      .limit(size)
+      .skip(page)
+      .sort({ [orderBy]: -1 });
   }
 }

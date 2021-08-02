@@ -14,4 +14,6 @@ export class PagingReqDto {
   @IsNumber({ allowNaN: false, allowInfinity: false }, { message: 'size 格式应为数字' })
   @Type(() => Number)
   size: number;
+
+  orderBy: string;
 }

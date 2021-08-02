@@ -91,6 +91,6 @@ export class ArticleController {
 
   @Get()
   async findAndPaging(@Query() query: PagingReqDto): Promise<ArticleGetResDto[]> {
-    return await this.articleService.findAndPaging((query.page - 1) * query.size, query.size);
+    return await this.articleService.findAndPaging((query.page - 1) * query.size, query.size, query.orderBy);
   }
 }
