@@ -5,7 +5,7 @@ import { AppModule } from './../src/app.module';
 import { TagFindAllResDto } from '../src/modules/tag/dtos/tag-find-all.res.dto';
 import { Model } from 'mongoose';
 import { Tag, TagDocument } from '../src/modules/tag/schemas/tag.schema';
-import { getModelToken, MongooseModule } from '@nestjs/mongoose';
+import { getModelToken } from '@nestjs/mongoose';
 
 describe('hippo (e2e)', () => {
   let app: INestApplication;
@@ -13,7 +13,7 @@ describe('hippo (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [MongooseModule.forRoot('mongodb://localhost/e2e-test', { useCreateIndex: true }), AppModule]
+      imports: [AppModule]
     }).compile();
 
     tagModel = moduleFixture.get(getModelToken(Tag.name));
