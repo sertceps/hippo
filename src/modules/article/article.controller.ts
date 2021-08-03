@@ -1,5 +1,6 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, Headers } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from '../auth/auth.service';
 import { CategoryService } from '../category/category.service';
 import { Category } from '../category/schemas/category.schema';
 import { IdReqDto } from '../common/dtos/id.req.dto';
@@ -19,13 +20,16 @@ export class ArticleController {
     private readonly articleService: ArticleService,
     private readonly tagService: TagService,
     private readonly categoryService: CategoryService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly authService: AuthService
   ) {}
 
   // 为什么这里不需要在 module 导入 jwt 策略就可以用
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  async create(@Body() body: ArticleCreateUpdateReqDto): Promise<IdResDto> {
+  async create(@Body() body: ArticleCreateUpdateReqDto, @Headers('authorization') authorization: string): Promise<IdResDto> {
+    const userInfo = await this.authService.decodeToken(authorization);
+
     let category: Category;
     if (body.category) {
       category = await this.categoryService.findOneById(body.category);
@@ -33,7 +37,7 @@ export class ArticleController {
     }
 
     // https://stackoverflow.com/questions/57833669/how-to-get-jwt-token-from-headers-in-controller
-    const user = await this.userService.findOneById(body.user);
+    const user = await this.userService.findOneById(userInfo.id);
     if (!user) throw new BadRequestException('用户不存在或已删除');
 
     let tags: TagDocument[];

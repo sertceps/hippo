@@ -24,4 +24,11 @@ export class AuthService {
 
     return token;
   }
+
+  async decodeToken(authorization: string): Promise<{ email: string; id: string; iat: number; exp: number }> {
+    const token = authorization.replace('Bearer ', '');
+    const payload = this.jwtService.decode(token, { json: true }) as { email: string; id: string; iat: number; exp: number };
+
+    return payload;
+  }
 }
