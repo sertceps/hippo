@@ -11,6 +11,7 @@ import { TagDocument } from '../tag/schemas/tag.schema';
 import { TagService } from '../tag/tag.service';
 import { UserService } from '../user/user.service';
 import { ArticleService } from './article.service';
+import { AuthUser } from './decorators/user.decorator';
 import { ArticleCreateUpdateReqDto } from './dtos/article-create-update.req.dto';
 import { ArticleGetResDto } from './dtos/article-get.res.dto';
 
@@ -27,8 +28,9 @@ export class ArticleController {
   // 为什么这里不需要在 module 导入 jwt 策略就可以用
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  async create(@Body() body: ArticleCreateUpdateReqDto, @Headers('authorization') authorization: string): Promise<IdResDto> {
+  async create(@Body() body: ArticleCreateUpdateReqDto, @Headers('authorization') authorization: string, @AuthUser() us: any): Promise<IdResDto> {
     const userInfo = await this.authService.decodeToken(authorization);
+    console.log(us);
 
     let category: Category;
     if (body.category) {
