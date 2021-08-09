@@ -5,10 +5,6 @@ export class ArticleCreateUpdateReqDto {
   @IsNotEmpty({ message: '标题不能为空' })
   title: string;
 
-  @IsMongoId({ message: 'user 格式应为 mongodb id' })
-  @IsNotEmpty({ message: 'user 不能为空' })
-  user: string;
-
   @IsMongoId({ message: 'category 格式应为 mongodb id' })
   @IsNotEmpty({ message: 'category 不能为空' })
   @IsOptional()

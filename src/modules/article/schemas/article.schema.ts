@@ -21,6 +21,9 @@ export class Article {
   tags: Tag[];
 
   @Prop()
+  abstract: string;
+
+  @Prop()
   content: string;
 
   @Prop({ type: Boolean, default: false, select: false })

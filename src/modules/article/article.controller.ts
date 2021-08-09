@@ -15,8 +15,6 @@ import { AuthUser } from './decorators/user.decorator';
 import { ArticleCreateUpdateReqDto } from './dtos/article-create-update.req.dto';
 import { ArticleGetResDto } from './dtos/article-get.res.dto';
 
-// TODO： 文章摘要，获取列表时时不返回内容，只返回摘要
-
 @Controller('articles')
 export class ArticleController {
   constructor(
@@ -48,7 +46,9 @@ export class ArticleController {
       tags = await Promise.all(body.tags.map(async item => this.tagService.findOneById(item)));
     }
 
-    const articleDoc = { ...body, tags, category, user, deleted: false };
+    const abstract = body.content.substring(0, 200);
+
+    const articleDoc = { ...body, tags, category, user, abstract, deleted: false };
     const article = await this.articleService.create(articleDoc);
 
     return { id: article._id };
@@ -64,7 +64,7 @@ export class ArticleController {
 
   @UseGuards(AuthGuard('jwt'))
   @Put(':id')
-  async updateOneById(@Param() { id }: IdReqDto, @Body() body: ArticleCreateUpdateReqDto): Promise<NumberResDto> {
+  async updateOneById(@Param() { id }: IdReqDto, @Body() body: ArticleCreateUpdateReqDto, @AuthUser() authorization: string): Promise<NumberResDto> {
     const article = await this.articleService.findOneById(id);
     if (!article) throw new BadRequestException('文章不存在或已删除');
 
@@ -74,7 +74,8 @@ export class ArticleController {
       if (!category) throw new BadRequestException('类别不存在或已删除');
     }
 
-    const user = await this.userService.findOneById(body.user);
+    const userInfo = await this.authService.decodeToken(authorization);
+    const user = await this.userService.findOneByEmail(userInfo.email);
     if (!user) throw new BadRequestException('用户不存在或已删除');
 
     let tags: TagDocument[];
@@ -82,7 +83,9 @@ export class ArticleController {
       tags = await Promise.all(body.tags.map(async item => this.tagService.findOneById(item)));
     }
 
-    const articleDoc = { ...body, tags, category, user, deleted: false };
+    const abstract = body.content.substring(0, 200);
+
+    const articleDoc = { ...body, tags, category, user, abstract, deleted: false };
     const res = await this.articleService.updateOneById(id, articleDoc);
 
     return { affected: res.nModified };

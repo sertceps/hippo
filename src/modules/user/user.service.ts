@@ -1,12 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, UpdateWriteOpResult } from 'mongoose';
 import { UserCreateUpdateReqDto } from './dtos/user-create-update.req.dto';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
-export class UserService {
+export class UserService implements OnApplicationBootstrap {
   constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
+
+  async onApplicationBootstrap() {
+    const user = await this.findOneByEmail('admin@admin.com');
+    if (!user) {
+      await this.userModel.create({ email: 'admin@admin.com', password: 'admin' });
+    }
+  }
 
   async create(body: UserCreateUpdateReqDto): Promise<UserDocument> {
     return this.userModel.create(body);
