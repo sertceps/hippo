@@ -1,5 +1,6 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthUser } from '../article/decorators/user.decorator';
 import { AuthService } from '../auth/auth.service';
 import { IdReqDto } from '../common/dtos/id.req.dto';
 import { IdResDto } from '../common/dtos/id.res.dto';
@@ -20,6 +21,16 @@ export class UserController {
     if (!user) throw new BadRequestException('邮箱或密码不正确');
 
     return { access_token: await this.authService.certificate(user) };
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/info')
+  async getLoginInfo(@AuthUser() authorization: string): Promise<UserGetResDto> {
+    const userInfo = await this.authService.decodeToken(authorization);
+    const user = await this.userService.findOneById(userInfo.id);
+    if (!user) throw new BadRequestException('用户不存在或已删除');
+
+    return user;
   }
 
   @UseGuards(AuthGuard('jwt'))

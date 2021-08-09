@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, Headers } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '../auth/auth.service';
 import { CategoryService } from '../category/category.service';
@@ -28,9 +28,8 @@ export class ArticleController {
   // 为什么这里不需要在 module 导入 jwt 策略就可以用
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  async create(@Body() body: ArticleCreateUpdateReqDto, @Headers('authorization') authorization: string, @AuthUser() us: any): Promise<IdResDto> {
+  async create(@Body() body: ArticleCreateUpdateReqDto, @AuthUser() authorization: string): Promise<IdResDto> {
     const userInfo = await this.authService.decodeToken(authorization);
-    console.log(us);
 
     let category: Category;
     if (body.category) {
