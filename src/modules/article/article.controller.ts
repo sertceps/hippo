@@ -15,6 +15,8 @@ import { AuthUser } from './decorators/user.decorator';
 import { ArticleCreateUpdateReqDto } from './dtos/article-create-update.req.dto';
 import { ArticleGetResDto } from './dtos/article-get.res.dto';
 
+// TODO： 文章摘要，获取列表时时不返回内容，只返回摘要
+
 @Controller('articles')
 export class ArticleController {
   constructor(

@@ -10,6 +10,7 @@ import { TagModule } from './modules/tag/tag.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
+  // TODO： 使用 factory 来配置
   imports: [
     MongooseModule.forRoot('mongodb://localhost/test', { useCreateIndex: true }),
     ArticleModule,
