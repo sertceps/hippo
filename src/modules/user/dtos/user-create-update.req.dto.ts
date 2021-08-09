@@ -59,7 +59,7 @@ export class UserCreateUpdateReqDto {
   @IsOptional()
   websites: WebsiteDto;
 
-  @IsArray({ message: 'description 格式应为对象数组' })
+  @IsString({ message: 'description 格式应为字符串' })
   @IsOptional()
   description: string;
 }
