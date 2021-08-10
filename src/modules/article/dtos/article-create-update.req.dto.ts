@@ -18,5 +18,6 @@ export class ArticleCreateUpdateReqDto {
 
   @IsString({ message: 'content 格式应为字符串' })
   @IsNotEmpty({ message: '内容不能为空' })
+  @IsOptional()
   content: string;
 }

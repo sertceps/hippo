@@ -68,7 +68,7 @@ export class ArticleController {
     const article = await this.articleService.findOneById(id);
     if (!article) throw new BadRequestException('文章不存在或已删除');
 
-    let category: Category;
+    let category = article.category;
     if (body.category) {
       category = await this.categoryService.findOneById(body.category);
       if (!category) throw new BadRequestException('类别不存在或已删除');
@@ -78,12 +78,15 @@ export class ArticleController {
     const user = await this.userService.findOneByEmail(userInfo.email);
     if (!user) throw new BadRequestException('用户不存在或已删除');
 
-    let tags: TagDocument[];
+    let tags = article.tags;
     if (body.tags) {
       tags = await Promise.all(body.tags.map(async item => this.tagService.findOneById(item)));
     }
 
-    const abstract = body.content.substring(0, 200);
+    let abstract = article.abstract;
+    if (body.content) {
+      abstract = body.content.substring(0, 200);
+    }
 
     const articleDoc = { ...body, tags, category, user, abstract, deleted: false };
     const res = await this.articleService.updateOneById(id, articleDoc);

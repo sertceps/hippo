@@ -3,6 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { UserDocument } from '../user/schemas/user.schema';
 import { UserService } from '../user/user.service';
 
+// TODO token 过期时间
+// TODO token 用户不存在应？
 @Injectable()
 export class AuthService {
   constructor(private readonly userService: UserService, private readonly jwtService: JwtService) {}
