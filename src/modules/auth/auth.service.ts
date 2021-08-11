@@ -19,7 +19,8 @@ export class AuthService {
   async certificate(user: UserDocument): Promise<string> {
     const payload = {
       email: user.email,
-      id: user._id
+      id: user._id,
+      role: user.role
     };
 
     const token = this.jwtService.sign(payload);
