@@ -15,6 +15,7 @@ import { UserGetResDto } from './dtos/user-get.res.dto';
 import { UserLoginReqDto } from './dtos/user-login.req.dto';
 import { RolesGuard } from './guards/roles.guard';
 import { UserService } from './user.service';
+import { UserRole } from './constants/user.constants';
 
 @Controller('users')
 export class UserController {
@@ -25,6 +26,7 @@ export class UserController {
     private readonly authService: AuthService
   ) {}
 
+  /** 登录 */
   @Post('/login')
   async login(@Body() body: UserLoginReqDto): Promise<TokenResDto> {
     const user = await this.authService.validateUser(body.email, body.password);
@@ -33,6 +35,7 @@ export class UserController {
     return { access_token: await this.authService.certificate(user), jwt_expires_in: this.commonConfig.jwtExpiresIn };
   }
 
+  /** 获取已登录用户信息 */
   @UseGuards(AuthGuard('jwt'))
   @Get('/info')
   async getLoginInfo(@AuthUser() userInfo: UserInfo): Promise<UserGetResDto> {
@@ -42,7 +45,9 @@ export class UserController {
     return user;
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  /** 创建用户 */
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.Super)
   @Post()
   async create(@Body() body: UserCreateUpdateReqDto): Promise<IdResDto> {
     const count = await this.userService.checkRepeat(body.email);
@@ -52,8 +57,9 @@ export class UserController {
     return { id: user._id };
   }
 
+  /** 删除用户 */
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('super')
+  @Roles(UserRole.Super)
   @Delete(':id')
   async deleteOneById(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.userService.deleteOneById(id);
@@ -61,7 +67,12 @@ export class UserController {
     return { affected: res.nModified };
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  // TODO: 登录用户信息修改接口
+  // TODO: 修改密码接口
+
+  /** 修改用户信息 */
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.Super)
   @Put(':id')
   async updateOneById(@Param() { id }: IdReqDto, @Body() body: UserCreateUpdateReqDto): Promise<NumberResDto> {
     const user = await this.userService.findOneById(id);
@@ -75,7 +86,7 @@ export class UserController {
     return { affected: res.nModified };
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  /** 获取单个用户信息 */
   @Get(':id')
   async findOneById(@Param() { id }: IdReqDto): Promise<UserGetResDto> {
     const user = await this.userService.findOneById(id);
@@ -84,7 +95,9 @@ export class UserController {
     return await this.userService.findOneById(id);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  /** 获取用户列表 */
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.Super, UserRole.Admin, UserRole.Normal)
   @Get()
   async findAll(): Promise<UserGetResDto[]> {
     return await this.userService.findAll();
