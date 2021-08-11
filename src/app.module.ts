@@ -7,6 +7,7 @@ import { ArticleModule } from './modules/article/article.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CategoryModule } from './modules/category/category.module';
 import { CommentModule } from './modules/comment/comment.module';
+import { CommonConfigRegister } from './modules/config/registers/common.register';
 import { MongoDbRegister } from './modules/config/registers/mongodb.registers';
 import { ConfigValidation } from './modules/config/validations/config.validation';
 import { TagModule } from './modules/tag/tag.module';
@@ -18,7 +19,7 @@ import { UserModule } from './modules/user/user.module';
       isGlobal: true,
       validationSchema: ConfigValidation,
       validationOptions: { allowUnknown: true, abortEarly: true },
-      load: [MongoDbRegister]
+      load: [CommonConfigRegister, MongoDbRegister]
     }),
 
     MongooseModule.forRootAsync({
