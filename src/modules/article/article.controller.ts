@@ -3,15 +3,16 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '../auth/auth.service';
 import { CategoryService } from '../category/category.service';
 import { Category } from '../category/schemas/category.schema';
+import { AuthUser } from '../common/decorators/user.decorator';
 import { IdReqDto } from '../common/dtos/id.req.dto';
 import { IdResDto } from '../common/dtos/id.res.dto';
 import { NumberResDto } from '../common/dtos/number.res.dto';
 import { PagingReqDto } from '../common/dtos/paging.req.dto';
+import { UserInfo } from '../common/interfaces/user-info';
 import { TagDocument } from '../tag/schemas/tag.schema';
 import { TagService } from '../tag/tag.service';
 import { UserService } from '../user/user.service';
 import { ArticleService } from './article.service';
-import { AuthUser } from './decorators/user.decorator';
 import { ArticleCreateUpdateReqDto } from './dtos/article-create-update.req.dto';
 import { ArticleGetResDto } from './dtos/article-get.res.dto';
 
@@ -28,16 +29,14 @@ export class ArticleController {
   // 为什么这里不需要在 module 导入 jwt 策略就可以用
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  async create(@Body() body: ArticleCreateUpdateReqDto, @AuthUser() authorization: string): Promise<IdResDto> {
-    const userInfo = await this.authService.decodeToken(authorization);
-
+  async create(@Body() body: ArticleCreateUpdateReqDto, @AuthUser() userInfo: UserInfo): Promise<IdResDto> {
     let category: Category;
     if (body.category) {
       category = await this.categoryService.findOneById(body.category);
       if (!category) throw new BadRequestException('类别不存在或已删除');
     }
 
-    // https://stackoverflow.com/questions/57833669/how-to-get-jwt-token-from-headers-in-controller
+    // https://stackoverflow.com/questions/62299932/how-to-get-user-data-with-req-user-on-decorator-in-nest-js
     const user = await this.userService.findOneById(userInfo.id);
     if (!user) throw new BadRequestException('用户不存在或已删除');
 
@@ -64,7 +63,7 @@ export class ArticleController {
 
   @UseGuards(AuthGuard('jwt'))
   @Put(':id')
-  async updateOneById(@Param() { id }: IdReqDto, @Body() body: ArticleCreateUpdateReqDto, @AuthUser() authorization: string): Promise<NumberResDto> {
+  async updateOneById(@Param() { id }: IdReqDto, @Body() body: ArticleCreateUpdateReqDto, @AuthUser() userInfo: UserInfo): Promise<NumberResDto> {
     const article = await this.articleService.findOneById(id);
     if (!article) throw new BadRequestException('文章不存在或已删除');
 
@@ -74,7 +73,6 @@ export class ArticleController {
       if (!category) throw new BadRequestException('类别不存在或已删除');
     }
 
-    const userInfo = await this.authService.decodeToken(authorization);
     const user = await this.userService.findOneByEmail(userInfo.email);
     if (!user) throw new BadRequestException('用户不存在或已删除');
 

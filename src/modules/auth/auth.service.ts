@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { UserDocument } from '../user/schemas/user.schema';
 import { UserService } from '../user/user.service';
 
-// TODO token 过期时间
 // TODO token 用户不存在应？
 @Injectable()
 export class AuthService {
@@ -30,7 +29,7 @@ export class AuthService {
 
   async decodeToken(authorization: string): Promise<{ email: string; id: string; iat: number; exp: number }> {
     const token = authorization.replace('Bearer ', '');
-    const payload = this.jwtService.decode(token, { json: true }) as { email: string; id: string; iat: number; exp: number };
+    const payload = this.jwtService.decode(token, { json: true }) as { email: string; id: string; role: string; iat: number; exp: number };
 
     return payload;
   }

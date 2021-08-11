@@ -32,7 +32,7 @@ export class UserService implements OnApplicationBootstrap {
   }
 
   async findOneByEmail(email: string, login?: boolean): Promise<UserDocument> {
-    if (login) return this.userModel.findOne({ email, deleted: false }).select('password email');
+    if (login) return this.userModel.findOne({ email, deleted: false }).select('password email role');
     return this.userModel.findOne({ email, deleted: false });
   }
 

@@ -1,16 +1,19 @@
 import { BadRequestException, Body, Controller, Delete, Get, Inject, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthUser } from '../article/decorators/user.decorator';
+import { AuthUser } from '../common/decorators/user.decorator';
 import { AuthService } from '../auth/auth.service';
 import { IdReqDto } from '../common/dtos/id.req.dto';
 import { IdResDto } from '../common/dtos/id.res.dto';
 import { NumberResDto } from '../common/dtos/number.res.dto';
 import { TokenResDto } from '../common/dtos/token.res.dto';
+import { UserInfo } from '../common/interfaces/user-info';
 import { CommonConfigRegister } from '../config/registers/common.register';
+import { Roles } from './decorators/roles.decorator';
 import { UserCreateUpdateReqDto } from './dtos/user-create-update.req.dto';
 import { UserGetResDto } from './dtos/user-get.res.dto';
 import { UserLoginReqDto } from './dtos/user-login.req.dto';
+import { RolesGuard } from './guards/roles.guard';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -32,8 +35,7 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('/info')
-  async getLoginInfo(@AuthUser() authorization: string): Promise<UserGetResDto> {
-    const userInfo = await this.authService.decodeToken(authorization);
+  async getLoginInfo(@AuthUser() userInfo: UserInfo): Promise<UserGetResDto> {
     const user = await this.userService.findOneById(userInfo.id);
     if (!user) throw new BadRequestException('用户不存在或已删除');
 
@@ -50,7 +52,8 @@ export class UserController {
     return { id: user._id };
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('super')
   @Delete(':id')
   async deleteOneById(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.userService.deleteOneById(id);
