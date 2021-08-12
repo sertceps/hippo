@@ -1,17 +1,27 @@
-import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
+import { Inject, Injectable, OnApplicationBootstrap } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, UpdateWriteOpResult } from 'mongoose';
+import { UserConfigRegister } from '../config/registers/user.register';
+import { UserRole } from './constants/user.constants';
 import { UserCreateUpdateReqDto } from './dtos/user-create-update.req.dto';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
 export class UserService implements OnApplicationBootstrap {
-  constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name)
+    private readonly userModel: Model<UserDocument>,
+    @Inject(UserConfigRegister.KEY)
+    private userConfig: ConfigType<typeof UserConfigRegister>
+  ) {}
 
   async onApplicationBootstrap() {
-    const user = await this.findOneByEmail('admin@admin.com');
+    const user = await this.findOneByEmail(this.userConfig.superUserEmail);
     if (!user) {
-      await this.userModel.create({ email: 'admin@admin.com', password: 'admin' });
+      console.log(this.userConfig.superUserPassword);
+
+      await this.userModel.create({ email: this.userConfig.superUserEmail, password: this.userConfig.superUserPassword, role: UserRole.Super });
     }
   }
 

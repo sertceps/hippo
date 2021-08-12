@@ -13,5 +13,6 @@ async function bootstrap() {
 
   await app.listen(commonConfig.port);
   // TODO: patch 方法
+  // TODO 回收站 清空，硬删除
 }
 bootstrap();

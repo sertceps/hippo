@@ -36,8 +36,6 @@ export class UserCreateUpdateReqDto {
   @IsNotEmpty({ message: 'email 不能为空' })
   email: string;
 
-  // TODO 密码修改 单独接口
-  // TODO 找回密码
   @IsString({ message: 'password 应为字符串格式' })
   @IsNotEmpty({ message: 'password 不能为空' })
   @IsOptional()

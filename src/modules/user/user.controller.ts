@@ -69,6 +69,8 @@ export class UserController {
 
   // TODO: 登录用户信息修改接口
   // TODO: 修改密码接口
+  // TODO 找回密码
+  // TODO md5 + salt
 
   /** 修改用户信息 */
   @UseGuards(AuthGuard('jwt'), RolesGuard)
