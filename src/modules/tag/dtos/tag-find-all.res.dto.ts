@@ -1,3 +1,3 @@
-export class TagFindAllResDto {
+export class TagGetResDto {
   tag: string;
 }

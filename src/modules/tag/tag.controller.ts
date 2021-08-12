@@ -3,7 +3,7 @@ import { NumberResDto } from '../common/dtos/number.res.dto';
 import { IdReqDto } from '../common/dtos/id.req.dto';
 import { IdResDto } from '../common/dtos/id.res.dto';
 import { TagCreateUpdateReqDto } from './dtos/tag-create-update.req.dto';
-import { TagFindAllResDto } from './dtos/tag-find-all.res.dto';
+import { TagGetResDto } from './dtos/tag-find-all.res.dto';
 import { TagService } from './tag.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../user/guards/roles.guard';
@@ -51,7 +51,7 @@ export class TagController {
 
   /** 获取标签列表 */
   @Get()
-  async findAll(): Promise<TagFindAllResDto[]> {
+  async findAll(): Promise<TagGetResDto[]> {
     return await this.tagService.findAll();
   }
 }

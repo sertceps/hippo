@@ -12,6 +12,7 @@ import { MongoDbRegister } from './modules/config/registers/mongodb.registers';
 import { UserConfigRegister } from './modules/config/registers/user.register';
 import { ConfigValidation } from './modules/config/validations/config.validation';
 import { TagModule } from './modules/tag/tag.module';
+import { TrashModule } from './modules/trash/trash.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -36,7 +37,8 @@ import { UserModule } from './modules/user/user.module';
     CommentModule,
     TagModule,
     UserModule,
-    AuthModule
+    AuthModule,
+    TrashModule
   ],
   controllers: [AppController],
   providers: [AppService]
