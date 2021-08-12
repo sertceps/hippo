@@ -45,6 +45,10 @@ export class UserService implements OnApplicationBootstrap {
     return this.userModel.updateOne({ _id: id, deleted: false }, body);
   }
 
+  async updateRole(id: string, role: UserRole): Promise<UpdateWriteOpResult> {
+    return this.userModel.updateOne({ _id: id, deleted: false }, { role });
+  }
+
   async findOneById(id: string): Promise<UserDocument> {
     return this.userModel.findOne({ _id: id, deleted: false });
   }

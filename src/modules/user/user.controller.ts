@@ -18,6 +18,7 @@ import { UserService } from './user.service';
 import { UserRole } from './constants/user.constants';
 import { PasswordUpdateReqDto } from './dtos/password-update.req.dto';
 import { UserUpdateReqDto } from './dtos/user-update.req.dto';
+import { RoleUpdateReqDto } from './dtos/role-update.req.dto';
 
 @Controller('users')
 export class UserController {
@@ -47,6 +48,22 @@ export class UserController {
     return user;
   }
 
+  /** 登录用户修改资料 */
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('info')
+  async updateUserInfo(@Body() body: UserUpdateReqDto, @AuthUser() userInfo: UserInfo): Promise<NumberResDto> {
+    const count = await this.userService.checkRepeat(body.email);
+    if (count > 0) throw new BadRequestException('邮箱已存在');
+
+    const res = await this.userService.updateOneById(userInfo.id, body);
+
+    return { affected: res.nModified };
+  }
+
+  // TODO 找回密码
+  /** 找回密码 */
+  /** 发邮件？ */
+
   /** 修改密码 */
   @UseGuards(AuthGuard('jwt'))
   @Patch('password')
@@ -56,22 +73,6 @@ export class UserController {
 
     const md5Password = await this.authService.encrypt(body.new_password);
     const res = await this.userService.updatePassword(user.id, md5Password);
-
-    return { affected: res.nModified };
-  }
-
-  // TODO 找回密码
-  /** 找回密码 */
-  /** 发邮件？ */
-
-  /** 登录用户修改资料 */
-  @UseGuards(AuthGuard('jwt'))
-  @Patch('info')
-  async updateUserInfo(@Body() body: UserUpdateReqDto, @AuthUser() userInfo: UserInfo): Promise<NumberResDto> {
-    const count = await this.userService.checkRepeat(body.email);
-    if (count > 0) throw new BadRequestException('邮箱已存在');
-
-    const res = await this.userService.updateOneById(userInfo.id, body);
 
     return { affected: res.nModified };
   }
@@ -104,7 +105,7 @@ export class UserController {
   /** 修改用户信息 */
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRole.Super)
-  @Put(':id')
+  @Patch(':id')
   async updateOneById(@Param() { id }: IdReqDto, @Body() body: UserUpdateReqDto): Promise<NumberResDto> {
     const user = await this.userService.findOneById(id);
     if (!user) throw new BadRequestException('用户不存在');
@@ -114,6 +115,18 @@ export class UserController {
 
     const res = await this.userService.updateOneById(id, body);
 
+    return { affected: res.nModified };
+  }
+
+  /** 修改权限 */
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.Super)
+  @Patch('roles/:id')
+  async updateRole(@Param() { id }: IdReqDto, @Body() { role }: RoleUpdateReqDto): Promise<NumberResDto> {
+    const user = await this.userService.findOneById(id);
+    if (!user) throw new BadRequestException('用户不存在');
+
+    const res = await this.userService.updateRole(user.id, role);
     return { affected: res.nModified };
   }
 
