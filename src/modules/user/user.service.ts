@@ -36,12 +36,20 @@ export class UserService implements OnApplicationBootstrap {
     return this.userModel.updateOne({ _id: id, deleted: false }, { deleted: true });
   }
 
+  async updatePassword(id: string, password: string): Promise<UpdateWriteOpResult> {
+    return this.userModel.updateOne({ _id: id, deleted: false }, { password });
+  }
+
   async updateOneById(id: string, body: UserCreateUpdateReqDto): Promise<UpdateWriteOpResult> {
     return this.userModel.updateOne({ _id: id, deleted: false }, body);
   }
 
   async findOneById(id: string): Promise<UserDocument> {
     return this.userModel.findOne({ _id: id, deleted: false });
+  }
+
+  async findOneByIdWithPassword(id: string): Promise<UserDocument> {
+    return this.userModel.findOne({ _id: id, deleted: false }).select('password');
   }
 
   async findOneByEmail(email: string, login?: boolean): Promise<UserDocument> {

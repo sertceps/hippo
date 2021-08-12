@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Inject, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Inject, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthUser } from '../common/decorators/user.decorator';
@@ -16,7 +16,7 @@ import { UserLoginReqDto } from './dtos/user-login.req.dto';
 import { RolesGuard } from './guards/roles.guard';
 import { UserService } from './user.service';
 import { UserRole } from './constants/user.constants';
-import * as md5 from 'md5';
+import { PasswordUpdateReqDto } from './dtos/password-update.req.dto';
 
 @Controller('users')
 export class UserController {
@@ -30,8 +30,7 @@ export class UserController {
   /** 登录 */
   @Post('/login')
   async login(@Body() body: UserLoginReqDto): Promise<TokenResDto> {
-    const password = md5(`${body.password}${this.commonConfig.passwordSalt}`);
-    const user = await this.authService.validateUser(body.email, password);
+    const user = await this.authService.validateUser(body.email, body.password);
     if (!user) throw new BadRequestException('邮箱或密码不正确');
 
     return { access_token: await this.authService.certificate(user), jwt_expires_in: this.commonConfig.jwtExpiresIn };
@@ -55,9 +54,9 @@ export class UserController {
     const count = await this.userService.checkRepeat(body.email);
     if (count > 0) throw new BadRequestException('邮箱已存在');
 
-    const password = md5(`${body.password}${this.commonConfig.passwordSalt}`);
+    const md5Password = this.authService.encrypt(body.password);
 
-    const user = await this.userService.create({ password, ...body });
+    const user = await this.userService.create({ password: md5Password, ...body });
 
     return { id: user._id };
   }
@@ -73,8 +72,20 @@ export class UserController {
   }
 
   // TODO: 登录用户信息修改接口
-  // TODO: 修改密码接口
   // TODO 找回密码
+
+  /** 修改密码 */
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('password')
+  async updatePassword(@Body() body: PasswordUpdateReqDto, @AuthUser() userInfo: UserInfo): Promise<NumberResDto> {
+    const user = await this.authService.validatePassword(userInfo.id, body.old_password);
+    if (!user) throw new BadRequestException('原密码错误');
+
+    const md5Password = await this.authService.encrypt(body.new_password);
+    const res = await this.userService.updatePassword(user.id, md5Password);
+
+    return { affected: res.nModified };
+  }
 
   /** 修改用户信息 */
   @UseGuards(AuthGuard('jwt'), RolesGuard)
