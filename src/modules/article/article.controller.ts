@@ -11,6 +11,9 @@ import { PagingReqDto } from '../common/dtos/paging.req.dto';
 import { UserInfo } from '../common/interfaces/user-info';
 import { TagDocument } from '../tag/schemas/tag.schema';
 import { TagService } from '../tag/tag.service';
+import { UserRole } from '../user/constants/user.constants';
+import { Roles } from '../user/decorators/roles.decorator';
+import { RolesGuard } from '../user/guards/roles.guard';
 import { UserService } from '../user/user.service';
 import { ArticleService } from './article.service';
 import { ArticleCreateUpdateReqDto } from './dtos/article-create-update.req.dto';
@@ -27,7 +30,9 @@ export class ArticleController {
   ) {}
 
   // 为什么这里不需要在 module 导入 jwt 策略就可以用
-  @UseGuards(AuthGuard('jwt'))
+  // 创建文章
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.Super, UserRole.Admin, UserRole.Normal)
   @Post()
   async create(@Body() body: ArticleCreateUpdateReqDto, @AuthUser() userInfo: UserInfo): Promise<IdResDto> {
     let category: Category;
@@ -53,7 +58,9 @@ export class ArticleController {
     return { id: article._id };
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  /** 删除文章 */
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.Super, UserRole.Admin)
   @Delete(':id')
   async deleteOneById(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.articleService.deleteOneById(id);
@@ -61,7 +68,9 @@ export class ArticleController {
     return { affected: res.nModified };
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  /** 修改文章 */
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.Super, UserRole.Admin, UserRole.Normal)
   @Put(':id')
   async updateOneById(@Param() { id }: IdReqDto, @Body() body: ArticleCreateUpdateReqDto, @AuthUser() userInfo: UserInfo): Promise<NumberResDto> {
     const article = await this.articleService.findOneById(id);
@@ -92,6 +101,7 @@ export class ArticleController {
     return { affected: res.nModified };
   }
 
+  /** 获取文章 */
   @Get(':id')
   async findOneById(@Param() { id }: IdReqDto): Promise<ArticleGetResDto> {
     const article = await this.articleService.findOneById(id);
@@ -100,6 +110,7 @@ export class ArticleController {
     return await this.articleService.findOneById(id);
   }
 
+  /** 获取文章列表 */
   @Get()
   async findAndPaging(@Query() query: PagingReqDto): Promise<ArticleGetResDto[]> {
     return await this.articleService.findAndPaging((query.page - 1) * query.size, query.size, query.orderBy);

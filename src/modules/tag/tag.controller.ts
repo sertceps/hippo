@@ -6,12 +6,17 @@ import { TagCreateUpdateReqDto } from './dtos/tag-create-update.req.dto';
 import { TagFindAllResDto } from './dtos/tag-find-all.res.dto';
 import { TagService } from './tag.service';
 import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../user/guards/roles.guard';
+import { Roles } from '../user/decorators/roles.decorator';
+import { UserRole } from '../user/constants/user.constants';
 
 @Controller('tags')
 export class TagController {
   constructor(private readonly tagService: TagService) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  /** 创建标签 */
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.Super, UserRole.Admin, UserRole.Normal)
   @Post()
   async create(@Body() body: TagCreateUpdateReqDto): Promise<IdResDto> {
     const count = await this.tagService.checkRepeat(body.tag);
@@ -22,7 +27,9 @@ export class TagController {
     return { id: tag._id };
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  /** 删除标签 */
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.Super, UserRole.Admin)
   @Delete(':id')
   async deleteOneById(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.tagService.deleteOneById(id);
@@ -30,7 +37,9 @@ export class TagController {
     return { affected: res.ok };
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  /** 修改标签 */
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.Super, UserRole.Admin)
   @Put(':id')
   async updateOneById(@Param() { id }: IdReqDto, @Body() body: TagCreateUpdateReqDto): Promise<NumberResDto> {
     const res = await this.tagService.updateOneById(id, body.tag);
@@ -40,6 +49,7 @@ export class TagController {
     return { affected: res.ok };
   }
 
+  /** 获取标签列表 */
   @Get()
   async findAll(): Promise<TagFindAllResDto[]> {
     return await this.tagService.findAll();
