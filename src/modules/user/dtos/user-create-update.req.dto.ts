@@ -1,4 +1,5 @@
-import { IsArray, IsEmail, IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsEmail, IsEnum, IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
+import { UserRole } from '../constants/user.constants';
 
 class WebsiteDto {
   @IsString({ message: '格式应为字符串' })
@@ -41,6 +42,10 @@ export class UserCreateUpdateReqDto {
   @IsNotEmpty({ message: 'password 不能为空' })
   @IsOptional()
   password: string;
+
+  @IsEnum(UserRole, { message: 'role 不在选项中' })
+  @IsNotEmpty({ message: 'role 不能为空' })
+  role: UserRole;
 
   @IsString({ message: 'birth 格式应为 Date' })
   @IsOptional()

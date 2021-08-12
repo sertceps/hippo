@@ -41,7 +41,6 @@ export class ArticleController {
       if (!category) throw new BadRequestException('类别不存在或已删除');
     }
 
-    // https://stackoverflow.com/questions/62299932/how-to-get-user-data-with-req-user-on-decorator-in-nest-js
     const user = await this.userService.findOneById(userInfo.id);
     if (!user) throw new BadRequestException('用户不存在或已删除');
 
@@ -60,7 +59,7 @@ export class ArticleController {
 
   /** 删除文章 */
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRole.Super, UserRole.Admin)
+  @Roles(UserRole.Super, UserRole.Admin, UserRole.Normal)
   @Delete(':id')
   async deleteOneById(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.articleService.deleteOneById(id);
