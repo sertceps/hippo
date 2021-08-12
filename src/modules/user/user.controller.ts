@@ -16,6 +16,7 @@ import { UserLoginReqDto } from './dtos/user-login.req.dto';
 import { RolesGuard } from './guards/roles.guard';
 import { UserService } from './user.service';
 import { UserRole } from './constants/user.constants';
+import * as md5 from 'md5';
 
 @Controller('users')
 export class UserController {
@@ -29,7 +30,8 @@ export class UserController {
   /** 登录 */
   @Post('/login')
   async login(@Body() body: UserLoginReqDto): Promise<TokenResDto> {
-    const user = await this.authService.validateUser(body.email, body.password);
+    const password = md5(`${body.password}${this.commonConfig.passwordSalt}`);
+    const user = await this.authService.validateUser(body.email, password);
     if (!user) throw new BadRequestException('邮箱或密码不正确');
 
     return { access_token: await this.authService.certificate(user), jwt_expires_in: this.commonConfig.jwtExpiresIn };
@@ -52,7 +54,10 @@ export class UserController {
   async create(@Body() body: UserCreateUpdateReqDto): Promise<IdResDto> {
     const count = await this.userService.checkRepeat(body.email);
     if (count > 0) throw new BadRequestException('邮箱已存在');
-    const user = await this.userService.create(body);
+
+    const password = md5(`${body.password}${this.commonConfig.passwordSalt}`);
+
+    const user = await this.userService.create({ password, ...body });
 
     return { id: user._id };
   }
@@ -70,7 +75,6 @@ export class UserController {
   // TODO: 登录用户信息修改接口
   // TODO: 修改密码接口
   // TODO 找回密码
-  // TODO md5 + salt
 
   /** 修改用户信息 */
   @UseGuards(AuthGuard('jwt'), RolesGuard)

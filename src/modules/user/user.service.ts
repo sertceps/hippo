@@ -2,10 +2,12 @@ import { Inject, Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, UpdateWriteOpResult } from 'mongoose';
+import { CommonConfigRegister } from '../config/registers/common.register';
 import { UserConfigRegister } from '../config/registers/user.register';
 import { UserRole } from './constants/user.constants';
 import { UserCreateUpdateReqDto } from './dtos/user-create-update.req.dto';
 import { User, UserDocument } from './schemas/user.schema';
+import * as md5 from 'md5';
 
 @Injectable()
 export class UserService implements OnApplicationBootstrap {
@@ -13,15 +15,16 @@ export class UserService implements OnApplicationBootstrap {
     @InjectModel(User.name)
     private readonly userModel: Model<UserDocument>,
     @Inject(UserConfigRegister.KEY)
-    private userConfig: ConfigType<typeof UserConfigRegister>
+    private userConfig: ConfigType<typeof UserConfigRegister>,
+    @Inject(CommonConfigRegister.KEY)
+    private commonConfig: ConfigType<typeof CommonConfigRegister>
   ) {}
 
   async onApplicationBootstrap() {
     const user = await this.findOneByEmail(this.userConfig.superUserEmail);
     if (!user) {
-      console.log(this.userConfig.superUserPassword);
-
-      await this.userModel.create({ email: this.userConfig.superUserEmail, password: this.userConfig.superUserPassword, role: UserRole.Super });
+      const password = md5(`${this.userConfig.superUserPassword}${this.commonConfig.passwordSalt}`);
+      await this.userModel.create({ email: this.userConfig.superUserEmail, password, role: UserRole.Super });
     }
   }
 
