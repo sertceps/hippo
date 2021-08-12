@@ -10,13 +10,14 @@ import { TokenResDto } from '../common/dtos/token.res.dto';
 import { UserInfo } from '../common/interfaces/user-info';
 import { CommonConfigRegister } from '../config/registers/common.register';
 import { Roles } from './decorators/roles.decorator';
-import { UserCreateUpdateReqDto } from './dtos/user-create-update.req.dto';
+import { UserCreateReqDto } from './dtos/user-create-update.req.dto';
 import { UserGetResDto } from './dtos/user-get.res.dto';
 import { UserLoginReqDto } from './dtos/user-login.req.dto';
 import { RolesGuard } from './guards/roles.guard';
 import { UserService } from './user.service';
 import { UserRole } from './constants/user.constants';
 import { PasswordUpdateReqDto } from './dtos/password-update.req.dto';
+import { UserUpdateReqDto } from './dtos/user-update.req.dto';
 
 @Controller('users')
 export class UserController {
@@ -28,7 +29,7 @@ export class UserController {
   ) {}
 
   /** 登录 */
-  @Post('/login')
+  @Post('login')
   async login(@Body() body: UserLoginReqDto): Promise<TokenResDto> {
     const user = await this.authService.validateUser(body.email, body.password);
     if (!user) throw new BadRequestException('邮箱或密码不正确');
@@ -38,7 +39,7 @@ export class UserController {
 
   /** 获取已登录用户信息 */
   @UseGuards(AuthGuard('jwt'))
-  @Get('/info')
+  @Get('info')
   async getLoginInfo(@AuthUser() userInfo: UserInfo): Promise<UserGetResDto> {
     const user = await this.userService.findOneById(userInfo.id);
     if (!user) throw new BadRequestException('用户不存在或已删除');
@@ -46,11 +47,40 @@ export class UserController {
     return user;
   }
 
+  /** 修改密码 */
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('password')
+  async updatePassword(@Body() body: PasswordUpdateReqDto, @AuthUser() userInfo: UserInfo): Promise<NumberResDto> {
+    const user = await this.authService.validatePassword(userInfo.id, body.old_password);
+    if (!user) throw new BadRequestException('原密码错误');
+
+    const md5Password = await this.authService.encrypt(body.new_password);
+    const res = await this.userService.updatePassword(user.id, md5Password);
+
+    return { affected: res.nModified };
+  }
+
+  // TODO 找回密码
+  /** 找回密码 */
+  /** 发邮件？ */
+
+  /** 登录用户修改资料 */
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('info')
+  async updateUserInfo(@Body() body: UserUpdateReqDto, @AuthUser() userInfo: UserInfo): Promise<NumberResDto> {
+    const count = await this.userService.checkRepeat(body.email);
+    if (count > 0) throw new BadRequestException('邮箱已存在');
+
+    const res = await this.userService.updateOneById(userInfo.id, body);
+
+    return { affected: res.nModified };
+  }
+
   /** 创建用户 */
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRole.Super)
   @Post()
-  async create(@Body() body: UserCreateUpdateReqDto): Promise<IdResDto> {
+  async create(@Body() body: UserCreateReqDto): Promise<IdResDto> {
     const count = await this.userService.checkRepeat(body.email);
     if (count > 0) throw new BadRequestException('邮箱已存在');
 
@@ -71,27 +101,11 @@ export class UserController {
     return { affected: res.nModified };
   }
 
-  // TODO: 登录用户信息修改接口
-  // TODO 找回密码
-
-  /** 修改密码 */
-  @UseGuards(AuthGuard('jwt'))
-  @Patch('password')
-  async updatePassword(@Body() body: PasswordUpdateReqDto, @AuthUser() userInfo: UserInfo): Promise<NumberResDto> {
-    const user = await this.authService.validatePassword(userInfo.id, body.old_password);
-    if (!user) throw new BadRequestException('原密码错误');
-
-    const md5Password = await this.authService.encrypt(body.new_password);
-    const res = await this.userService.updatePassword(user.id, md5Password);
-
-    return { affected: res.nModified };
-  }
-
   /** 修改用户信息 */
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRole.Super)
   @Put(':id')
-  async updateOneById(@Param() { id }: IdReqDto, @Body() body: UserCreateUpdateReqDto): Promise<NumberResDto> {
+  async updateOneById(@Param() { id }: IdReqDto, @Body() body: UserUpdateReqDto): Promise<NumberResDto> {
     const user = await this.userService.findOneById(id);
     if (!user) throw new BadRequestException('用户不存在');
 

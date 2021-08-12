@@ -5,9 +5,10 @@ import { Model, UpdateWriteOpResult } from 'mongoose';
 import { CommonConfigRegister } from '../config/registers/common.register';
 import { UserConfigRegister } from '../config/registers/user.register';
 import { UserRole } from './constants/user.constants';
-import { UserCreateUpdateReqDto } from './dtos/user-create-update.req.dto';
+import { UserCreateReqDto } from './dtos/user-create-update.req.dto';
 import { User, UserDocument } from './schemas/user.schema';
 import * as md5 from 'md5';
+import { UserUpdateReqDto } from './dtos/user-update.req.dto';
 
 @Injectable()
 export class UserService implements OnApplicationBootstrap {
@@ -28,7 +29,7 @@ export class UserService implements OnApplicationBootstrap {
     }
   }
 
-  async create(body: UserCreateUpdateReqDto): Promise<UserDocument> {
+  async create(body: UserCreateReqDto): Promise<UserDocument> {
     return this.userModel.create(body);
   }
 
@@ -40,7 +41,7 @@ export class UserService implements OnApplicationBootstrap {
     return this.userModel.updateOne({ _id: id, deleted: false }, { password });
   }
 
-  async updateOneById(id: string, body: UserCreateUpdateReqDto): Promise<UpdateWriteOpResult> {
+  async updateOneById(id: string, body: UserUpdateReqDto): Promise<UpdateWriteOpResult> {
     return this.userModel.updateOne({ _id: id, deleted: false }, body);
   }
 
