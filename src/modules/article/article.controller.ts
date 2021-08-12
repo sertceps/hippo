@@ -29,8 +29,7 @@ export class ArticleController {
     private readonly authService: AuthService
   ) {}
 
-  // 为什么这里不需要在 module 导入 jwt 策略就可以用
-  // 创建文章
+  /** 创建文章 */
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRole.Super, UserRole.Admin, UserRole.Normal)
   @Post()

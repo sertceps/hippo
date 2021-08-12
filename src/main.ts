@@ -12,7 +12,8 @@ async function bootstrap() {
   app.enableCors();
 
   await app.listen(commonConfig.port);
-  // TODO: patch 方法
-  // TODO 回收站 清空，硬删除
+  // TODO improve
+  // 拦截器、异常过滤、中间件
+  // TODO: Log
 }
 bootstrap();
