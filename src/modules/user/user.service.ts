@@ -29,43 +29,53 @@ export class UserService implements OnApplicationBootstrap {
     }
   }
 
+  /** 创建用户 */
   async create(body: UserCreateReqDto): Promise<UserDocument> {
     return this.userModel.create(body);
   }
 
+  /** 删除用户 */
   async deleteOneById(id: string): Promise<UpdateWriteOpResult> {
     return this.userModel.updateOne({ _id: id, deleted: false }, { deleted: true });
   }
 
+  /** 修改密码 */
   async updatePassword(id: string, password: string): Promise<UpdateWriteOpResult> {
     return this.userModel.updateOne({ _id: id, deleted: false }, { password });
   }
 
+  /** 修改用户信息 */
   async updateOneById(id: string, body: UserUpdateReqDto): Promise<UpdateWriteOpResult> {
     return this.userModel.updateOne({ _id: id, deleted: false }, body);
   }
 
+  /** 修改权限 */
   async updateRole(id: string, role: UserRole): Promise<UpdateWriteOpResult> {
     return this.userModel.updateOne({ _id: id, deleted: false }, { role });
   }
 
+  /** 获取单个用户信息 */
   async findOneById(id: string): Promise<UserDocument> {
     return this.userModel.findOne({ _id: id, deleted: false });
   }
 
+  /** 返回密码信息 */
   async findOneByIdWithPassword(id: string): Promise<UserDocument> {
     return this.userModel.findOne({ _id: id, deleted: false }).select('password');
   }
 
+  /** 通过 email 查找用户 */
   async findOneByEmail(email: string, login?: boolean): Promise<UserDocument> {
     if (login) return this.userModel.findOne({ email, deleted: false }).select('password email role');
     return this.userModel.findOne({ email, deleted: false });
   }
 
+  /** 获取用户列表 */
   async findAll(): Promise<UserDocument[]> {
     return this.userModel.find({ deleted: false });
   }
 
+  /** 检查邮箱重复 */
   async checkRepeat(email: string, id?: string): Promise<number> {
     if (id) return this.userModel.countDocuments({ email, _id: { $ne: id }, deleted: false });
 
