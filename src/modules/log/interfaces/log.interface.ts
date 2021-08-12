@@ -7,7 +7,7 @@ export interface LogInterface {
 
   requestMessage: string;
 
-  responseCode: string;
+  responseCode: number;
 
   responseMessage: string;
 

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserDocument } from '../user/schemas/user.schema';
 import { UserService } from '../user/user.service';
-import * as md5 from 'md5';
+import { Md5 } from 'ts-md5';
 import { CommonConfigRegister } from '../config/registers/common.register';
 import { ConfigType } from '@nestjs/config';
 
@@ -33,7 +33,7 @@ export class AuthService {
   }
 
   async encrypt(password: string): Promise<string> {
-    return md5(`${password}${this.commonConfig.passwordSalt}`);
+    return Md5.hashStr(`${password}${this.commonConfig.passwordSalt}`);
   }
 
   async certificate(user: UserDocument): Promise<string> {

@@ -11,6 +11,7 @@ import { CommonConfigRegister } from './modules/config/registers/common.register
 import { MongoDbRegister } from './modules/config/registers/mongodb.registers';
 import { UserConfigRegister } from './modules/config/registers/user.register';
 import { ConfigValidation } from './modules/config/validations/config.validation';
+import { LogModule } from './modules/log/log.module';
 import { TagModule } from './modules/tag/tag.module';
 import { TrashModule } from './modules/trash/trash.module';
 import { UserModule } from './modules/user/user.module';
@@ -27,7 +28,7 @@ import { UserModule } from './modules/user/user.module';
     MongooseModule.forRootAsync({
       useFactory: async (config: ConfigType<typeof MongoDbRegister>) => ({
         uri: config.uri,
-        useCreateIndex: config.useCreateIndex
+        useCreateIndex: true
       }),
       inject: [MongoDbRegister.KEY]
     }),
@@ -38,7 +39,8 @@ import { UserModule } from './modules/user/user.module';
     TagModule,
     UserModule,
     AuthModule,
-    TrashModule
+    TrashModule,
+    LogModule
   ],
   controllers: [AppController],
   providers: [AppService]

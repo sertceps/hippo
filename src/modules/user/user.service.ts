@@ -7,7 +7,7 @@ import { UserConfigRegister } from '../config/registers/user.register';
 import { UserRole } from './constants/user.constants';
 import { UserCreateReqDto } from './dtos/user-create-update.req.dto';
 import { User, UserDocument } from './schemas/user.schema';
-import * as md5 from 'md5';
+import { Md5 } from 'ts-md5';
 import { UserUpdateReqDto } from './dtos/user-update.req.dto';
 
 @Injectable()
@@ -24,7 +24,7 @@ export class UserService implements OnApplicationBootstrap {
   async onApplicationBootstrap() {
     const user = await this.findOneByEmail(this.userConfig.superUserEmail);
     if (!user) {
-      const password = md5(`${this.userConfig.superUserPassword}${this.commonConfig.passwordSalt}`);
+      const password = Md5.hashStr(`${this.userConfig.superUserPassword}${this.commonConfig.passwordSalt}`);
       await this.userModel.create({ email: this.userConfig.superUserEmail, password, role: UserRole.Super });
     }
   }
