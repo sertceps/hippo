@@ -1,4 +1,5 @@
 import { Controller, Delete, Get, Param, Patch } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { ArticleGetResDto } from '../article/dtos/article-get.res.dto';
 import { CategoryGetReqDto } from '../category/dtos/category-get.req.dto';
 import { IdReqDto } from '../common/dtos/id.req.dto';
@@ -7,6 +8,7 @@ import { TagGetResDto } from '../tag/dtos/tag-find-all.res.dto';
 import { UserGetResDto } from '../user/dtos/user-get.res.dto';
 import { TrashService } from './trash.service';
 
+@ApiTags('Trash')
 @Controller('trash')
 export class TrashController {
   constructor(private readonly trashService: TrashService) {}

@@ -9,7 +9,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../user/guards/roles.guard';
 import { Roles } from '../user/decorators/roles.decorator';
 import { UserRole } from '../user/constants/user.constants';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Tags')
 @Controller('tags')
 export class TagController {
   constructor(private readonly tagService: TagService) {}
