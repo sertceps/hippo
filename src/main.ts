@@ -23,7 +23,10 @@ async function bootstrap() {
 
   await app.listen(commonConfig.port);
   // TODO improve
-  // 拦截器、异常过滤、中间件
-  // TODO: Log
+  // 拦截器、异常过滤
+  // TODO file upload
+  // 直接存入 markdown?
+  // swagger
+  // 邮件通知
 }
 bootstrap();
