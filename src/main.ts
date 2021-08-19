@@ -14,6 +14,9 @@ async function bootstrap() {
   await app.listen(commonConfig.port);
   // TODO improve
   // 拦截器、异常过滤、中间件
-  // TODO: Log
+
+  // TODO private article
+  // TODO block user
+  // TODO 同级权限？
 }
 bootstrap();
