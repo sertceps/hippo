@@ -1,5 +1,6 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 import { CategoryService } from '../category/category.service';
 import { IdReqDto } from '../common/dtos/id.req.dto';
 import { IdResDto } from '../common/dtos/id.res.dto';
@@ -9,6 +10,7 @@ import { Roles } from '../user/decorators/roles.decorator';
 import { RolesGuard } from '../user/guards/roles.guard';
 import { CategoryCreateUpdateReqDto } from './dtos/category-create-update.req.dto';
 
+@ApiTags('Categories')
 @Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}

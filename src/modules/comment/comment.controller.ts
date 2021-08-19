@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 import { IdReqDto } from '../common/dtos/id.req.dto';
 import { IdResDto } from '../common/dtos/id.res.dto';
 import { NumberResDto } from '../common/dtos/number.res.dto';
@@ -9,6 +10,7 @@ import { RolesGuard } from '../user/guards/roles.guard';
 import { CommentService } from './comment.service';
 import { CommentCreateReqDto } from './dtos/comment-create.req.dto';
 
+@ApiTags('Comments')
 @Controller('comments')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}

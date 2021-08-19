@@ -19,7 +19,9 @@ import { UserRole } from './constants/user.constants';
 import { PasswordUpdateReqDto } from './dtos/password-update.req.dto';
 import { UserUpdateReqDto } from './dtos/user-update.req.dto';
 import { RoleUpdateReqDto } from './dtos/role-update.req.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
   constructor(

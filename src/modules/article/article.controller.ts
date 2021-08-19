@@ -1,5 +1,6 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../auth/auth.service';
 import { CategoryService } from '../category/category.service';
 import { Category } from '../category/schemas/category.schema';
@@ -19,6 +20,7 @@ import { ArticleService } from './article.service';
 import { ArticleCreateUpdateReqDto } from './dtos/article-create-update.req.dto';
 import { ArticleGetResDto } from './dtos/article-get.res.dto';
 
+@ApiTags('Articles')
 @Controller('articles')
 export class ArticleController {
   constructor(
