@@ -18,7 +18,7 @@ import { RolesGuard } from '../user/guards/roles.guard';
 import { UserService } from '../user/user.service';
 import { ArticleService } from './article.service';
 import { ArticleCreateUpdateReqDto } from './dtos/article-create-update.req.dto';
-import { ArticleGetResDto } from './dtos/article-get.res.dto';
+import { ArticleGetResDto, ArticleListGetResDto } from './dtos/article-get.res.dto';
 
 @ApiTags('Articles')
 @Controller('articles')
@@ -112,7 +112,9 @@ export class ArticleController {
 
   /** 获取文章列表 */
   @Get()
-  async findAndPaging(@Query() query: PagingReqDto): Promise<ArticleGetResDto[]> {
-    return await this.articleService.findAndPaging((query.page - 1) * query.size, query.size, query.orderBy);
+  async findAndPaging(@Query() query: PagingReqDto): Promise<ArticleListGetResDto> {
+    const [count, articles] = await this.articleService.findAndPaging((query.page - 1) * query.size, query.size, query.orderBy);
+
+    return { count, articles };
   }
 }

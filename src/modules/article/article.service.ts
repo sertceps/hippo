@@ -23,11 +23,14 @@ export class ArticleService {
     return this.articleModel.findOne({ _id: id, deleted: false });
   }
 
-  async findAndPaging(page: number, size: number, orderBy?: string): Promise<ArticleDocument[]> {
-    return this.articleModel
+  async findAndPaging(page: number, size: number, orderBy?: string): Promise<[number, ArticleDocument[]]> {
+    const count = await this.articleModel.countDocuments({ deleted: false });
+    const articles = await this.articleModel
       .find({ deleted: false })
       .limit(size)
       .skip(page)
       .sort({ [orderBy]: -1 });
+
+    return [count, articles];
   }
 }

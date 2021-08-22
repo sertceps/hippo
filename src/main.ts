@@ -26,9 +26,10 @@ async function bootstrap() {
   // 拦截器、异常过滤、中间件
   // TODO private article
   // TODO block user
-  // TODO 同级权限？
+  //  同级权限？
   // TODO file upload
-  // 邮件通知
+  // TODO 邮件通知
   // 直接存入 markdown?
+  // TODO 限制评论数
 }
 bootstrap();

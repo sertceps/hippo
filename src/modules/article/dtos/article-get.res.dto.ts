@@ -5,6 +5,8 @@ import { User } from '../../user/schemas/user.schema';
 export class ArticleGetResDto {
   title: string;
 
+  abstract: string;
+
   user: User;
 
   category: Category;
@@ -12,6 +14,9 @@ export class ArticleGetResDto {
   tags: Tag[];
 
   content: string;
+}
 
-  deleted: boolean;
+export class ArticleListGetResDto {
+  count: number;
+  articles: ArticleGetResDto[];
 }
