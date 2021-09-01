@@ -5,19 +5,19 @@ export class ArticleCreateUpdateReqDto {
   @IsNotEmpty({ message: '标题不能为空' })
   title: string;
 
+  @IsString({ message: 'content 格式应为字符串' })
+  @IsNotEmpty({ message: '内容不能为空' })
+  @IsOptional()
+  content: string;
+
   @IsMongoId({ message: 'category 格式应为 mongodb id' })
   @IsNotEmpty({ message: 'category 不能为空' })
   @IsOptional()
-  category: string;
+  category?: string;
 
   @IsMongoId({ each: true, message: 'tags 中项目格式应为 mongodb id' })
   @IsArray({ message: 'tags 应为数组' })
   @ArrayNotEmpty({ message: 'tags 不能为空' })
   @IsOptional()
-  tags: string[];
-
-  @IsString({ message: 'content 格式应为字符串' })
-  @IsNotEmpty({ message: '内容不能为空' })
-  @IsOptional()
-  content: string;
+  tags?: string[];
 }

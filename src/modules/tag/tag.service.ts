@@ -1,11 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, UpdateWriteOpResult } from 'mongoose';
 import { Tag, TagDocument } from './schemas/tag.schema';
 
 @Injectable()
-export class TagService {
+export class TagService implements OnApplicationBootstrap {
   constructor(@InjectModel(Tag.name) private readonly tagModel: Model<TagDocument>) {}
+
+  async onApplicationBootstrap() {
+    const unTaged = await this.findOneByTag('无标签');
+    if (!unTaged) return this.tagModel.create({ tag: '无标签' });
+  }
 
   async create(tag: string): Promise<TagDocument> {
     const tagDoc = new this.tagModel({ tag });

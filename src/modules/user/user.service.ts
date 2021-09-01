@@ -25,7 +25,7 @@ export class UserService implements OnApplicationBootstrap {
     const user = await this.findOneByEmail(this.userConfig.superUserEmail);
     if (!user) {
       const password = Md5.hashStr(`${this.userConfig.superUserPassword}${this.commonConfig.passwordSalt}`);
-      await this.userModel.create({ email: this.userConfig.superUserEmail, password, role: UserRole.Super });
+      return this.userModel.create({ email: this.userConfig.superUserEmail, password, role: UserRole.Super });
     }
   }
 
