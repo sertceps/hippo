@@ -31,5 +31,7 @@ async function bootstrap() {
   // TODO 邮件通知
   // 直接存入 markdown?
   // TODO 限制评论数
+
+  // follow & email & like & notify
 }
 bootstrap();
