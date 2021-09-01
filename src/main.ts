@@ -32,5 +32,6 @@ async function bootstrap() {
   // 直接存入 markdown?
   // TODO 限制评论数
   // 除了 article，也要校验用户？
+  // follow & email & like & notify
 }
 bootstrap();
