@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsEnum, IsHash, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { UserRole } from '../constants/user.constants';
 
 export class UserCreateReqDto {
@@ -12,6 +12,7 @@ export class UserCreateReqDto {
 
   @IsString({ message: 'password 应为字符串格式' })
   @IsNotEmpty({ message: 'password 不能为空' })
+  @IsHash('md5', { message: 'password 应为 MD5' })
   @IsOptional()
   password: string;
 

@@ -88,7 +88,6 @@ export class UserController {
     if (count > 0) throw new BadRequestException('邮箱已存在');
 
     const md5Password = this.authService.encrypt(body.password);
-
     const user = await this.userService.create({ password: md5Password, ...body });
 
     return { id: user._id };

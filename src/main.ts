@@ -33,5 +33,8 @@ async function bootstrap() {
   // TODO 限制评论数
   // 除了 article，也要校验用户？
   // follow & email & like & notify
+
+  // 共享协议_
+    // commit 规范
 }
 bootstrap();
