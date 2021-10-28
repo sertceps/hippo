@@ -27,8 +27,7 @@ import { UserModule } from './modules/user/user.module';
 
     MongooseModule.forRootAsync({
       useFactory: async (config: ConfigType<typeof MongoDbRegister>) => ({
-        uri: config.uri,
-        useCreateIndex: true
+        uri: config.uri
       }),
       inject: [MongoDbRegister.KEY]
     }),

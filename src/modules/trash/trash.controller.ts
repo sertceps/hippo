@@ -26,7 +26,7 @@ export class TrashController {
   async restoreAllArticles(): Promise<NumberResDto> {
     const res = await this.trashService.restoreAllArticles();
 
-    return { affected: res.nModified };
+    return { affected: res.modifiedCount };
   }
 
   /** 获取所有软删除文章 */
@@ -48,7 +48,7 @@ export class TrashController {
   async restoreOneArticle(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.trashService.restoreOneArticle(id);
 
-    return { affected: res.nModified };
+    return { affected: res.modifiedCount };
   }
 
   /** 获取单篇软删除文章 */
@@ -76,7 +76,7 @@ export class TrashController {
   async restoreOneUser(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.trashService.restoreOneUser(id);
 
-    return { affected: res.nModified };
+    return { affected: res.modifiedCount };
   }
 
   /** 获取所有软删除类别 */
@@ -98,7 +98,7 @@ export class TrashController {
   async restoreOneCategory(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.trashService.restoreOneCategory(id);
 
-    return { affected: res.nModified };
+    return { affected: res.modifiedCount };
   }
 
   /** 获取所有软删除标签 */
@@ -120,6 +120,6 @@ export class TrashController {
   async restoreOneTag(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.trashService.restoreOneTag(id);
 
-    return { affected: res.nModified };
+    return { affected: res.modifiedCount };
   }
 }

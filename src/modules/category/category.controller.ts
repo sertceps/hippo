@@ -35,7 +35,7 @@ export class CategoryController {
   async deleteOneById(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.categoryService.deleteOne(id);
 
-    return { affected: res.nModified };
+    return { affected: res.modifiedCount };
   }
 
   /** 修改分类 */
@@ -47,7 +47,7 @@ export class CategoryController {
     if (count > 0) throw new BadRequestException('类别已存在');
     const res = await this.categoryService.updateOne(id, body.category);
 
-    return { affected: res.nModified };
+    return { affected: res.modifiedCount };
   }
 
   /** 获取所有类别 */

@@ -59,7 +59,7 @@ export class UserController {
 
     const res = await this.userService.updateOneById(userInfo.id, body);
 
-    return { affected: res.nModified };
+    return { affected: res.modifiedCount };
   }
 
   // TODO 找回密码
@@ -76,7 +76,7 @@ export class UserController {
     const md5Password = await this.authService.encrypt(body.new_password);
     const res = await this.userService.updatePassword(user.id, md5Password);
 
-    return { affected: res.nModified };
+    return { affected: res.modifiedCount };
   }
 
   /** 创建用户 */
@@ -100,7 +100,7 @@ export class UserController {
   async deleteOneById(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.userService.deleteOneById(id);
 
-    return { affected: res.nModified };
+    return { affected: res.modifiedCount };
   }
 
   /** 修改用户信息 */
@@ -116,7 +116,7 @@ export class UserController {
 
     const res = await this.userService.updateOneById(id, body);
 
-    return { affected: res.nModified };
+    return { affected: res.modifiedCount };
   }
 
   /** 修改权限 */
@@ -128,7 +128,7 @@ export class UserController {
     if (!user) throw new BadRequestException('用户不存在');
 
     const res = await this.userService.updateRole(user.id, role);
-    return { affected: res.nModified };
+    return { affected: res.modifiedCount };
   }
 
   /** 获取单个用户信息 */

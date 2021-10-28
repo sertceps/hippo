@@ -65,7 +65,7 @@ export class ArticleController {
   async deleteOneById(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.articleService.deleteOneById(id);
 
-    return { affected: res.nModified };
+    return { affected: res.modifiedCount };
   }
 
   /** 修改文章 */
@@ -98,7 +98,7 @@ export class ArticleController {
     const articleDoc = { ...body, tags, category, user, abstract, deleted: false };
     const res = await this.articleService.updateOneById(id, articleDoc);
 
-    return { affected: res.nModified };
+    return { affected: res.modifiedCount };
   }
 
   /** 获取文章 */

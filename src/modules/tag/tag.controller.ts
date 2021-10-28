@@ -36,7 +36,7 @@ export class TagController {
   async deleteOneById(@Param() { id }: IdReqDto): Promise<NumberResDto> {
     const res = await this.tagService.deleteOneById(id);
 
-    return { affected: res.ok };
+    return { affected: res.modifiedCount };
   }
 
   /** 修改标签 */
@@ -48,7 +48,7 @@ export class TagController {
     const count = await this.tagService.checkRepeat(body.tag, id);
     if (count > 0) throw new BadRequestException('标签已存在');
 
-    return { affected: res.ok };
+    return { affected: res.modifiedCount };
   }
 
   /** 获取标签列表 */
