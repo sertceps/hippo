@@ -1,12 +1,14 @@
-import { ArrayNotEmpty, IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class ArticleCreateUpdateReqDto {
   @IsString({ message: 'title 格式应为字符串' })
   @IsNotEmpty({ message: '标题不能为空' })
+  @MaxLength(64, { message: '标题最大长度为 64 个字符' })
   title: string;
 
   @IsString({ message: 'content 格式应为字符串' })
   @IsNotEmpty({ message: '内容不能为空' })
+  @MaxLength(30000, { message: '内容超过 3 万字，请拆分' })
   @IsOptional()
   content: string;
 
