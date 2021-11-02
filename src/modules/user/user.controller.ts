@@ -37,7 +37,7 @@ export class UserController {
     const user = await this.authService.validateUser(body.email, body.password);
     if (!user) throw new BadRequestException('邮箱或密码不正确');
 
-    return { access_token: await this.authService.certificate(user), jwt_expires_in: this.commonConfig.jwtExpiresIn };
+    return { access_token: await this.authService.certificate(user), jwt_expires_in: this.commonConfig.jwtExpiresIn, role: user.role };
   }
 
   /** 获取已登录用户信息 */
