@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { ConfigType } from '@nestjs/config';
 import { CommonConfigRegister } from './modules/config/registers/common.register';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import './modules/mqtt/subscriber/main';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -35,6 +36,6 @@ async function bootstrap() {
   // follow & email & like & notify
 
   // 共享协议_
-    // commit 规范
+  // commit 规范
 }
 bootstrap();
