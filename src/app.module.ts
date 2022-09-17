@@ -31,7 +31,6 @@ import { UserModule } from './modules/user/user.module';
       }),
       inject: [MongoDbRegister.KEY]
     }),
-
     ArticleModule,
     CategoryModule,
     CommentModule,
