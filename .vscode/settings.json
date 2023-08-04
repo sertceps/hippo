@@ -27,13 +27,5 @@
   },
   "typescript.preferences.importModuleSpecifier": "relative", // 使用相对路径
   "javascript.preferences.importModuleSpecifier": "relative", // 使用相对路径
-  "cSpell.words": [
-    "gitee",
-    "metatype",
-    "nestjs",
-    "Parens",
-    "prebuild",
-    "weibo",
-    "zhihu"
-  ]
+  "cSpell.words": ["dtos", "gitee", "metatype", "nestjs", "Parens", "prebuild", "weibo", "zhihu"]
 }
